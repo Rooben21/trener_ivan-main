@@ -44,7 +44,7 @@ const Header = () => {
           onClick={(e) => { e.preventDefault(); scrollToSection('hero'); }}
           className="text-white font-semibold text-lg md:text-xl hover:opacity-90 transition-opacity"
         >
-          Ivan Volosyanko
+          Ivan Volosianko
         </a>
 
         {/* Desktop Navigation */}

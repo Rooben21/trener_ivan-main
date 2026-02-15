@@ -1,4 +1,4 @@
-// Mock data for Ivan Volosyanko Personal Trainer Landing Page
+// Mock data for Ivan Volosianko Personal Trainer Landing Page
 
 export const translations = {
   ua: {
@@ -127,7 +127,7 @@ export const translations = {
       contact: 'Kontakt'
     },
     hero: {
-      title: 'Ivan Volosyanko',
+      title: 'Ivan Volosianko',
       subtitle: 'Trener personalny',
       location: 'Łódź, Polska',
       cta: 'Zapisz się na trening'
@@ -239,7 +239,7 @@ export const translations = {
 
 export const trainerData = {
   name: 'Іван Волосянко',
-  namePl: 'Ivan Volosyanko',
+  namePl: 'Ivan Volosianko',
   phone: '+48 669 144 039',
   phoneLink: 'tel:+48669144039',
   instagram: '@vanya_angell',
