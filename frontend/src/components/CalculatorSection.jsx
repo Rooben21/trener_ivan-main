@@ -8,12 +8,12 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 // Body transformation images
 const bodyImages = {
   male: {
-    before: 'https://customer-assets.emergentagent.com/job_lodz-personal-coach/artifacts/pnzo1api_fat_man.png',
-    after: 'https://customer-assets.emergentagent.com/job_lodz-personal-coach/artifacts/z82rxd8g_sport_man.png'
+    before: '/images/calculator/fat_man.png',
+    after: '/images/calculator/sport_man.png'
   },
   female: {
-    before: 'https://customer-assets.emergentagent.com/job_lodz-personal-coach/artifacts/27tmv54w_fat_wooman.png',
-    after: 'https://customer-assets.emergentagent.com/job_lodz-personal-coach/artifacts/cuf11b7s_sport_wooman.png'
+    before: '/images/calculator/fat_woman.png',
+    after: '/images/calculator/sport_woman.png'
   }
 };
 
