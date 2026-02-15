@@ -283,5 +283,20 @@ export const galleryImages = [
     id: 5,
     src: '/images/gallery/photo5.jpg',
     alt: 'Ivan competition'
+  },
+  {
+    id: 6,
+    src: '/images/gallery/photo6.jpg',
+    alt: 'Ivan photo 6'
+  },
+  {
+    id: 7,
+    src: '/images/gallery/photo7.jpg',
+    alt: 'Ivan photo 7'
+  },
+  {
+    id: 8,
+    src: '/images/gallery/photo8.jpg',
+    alt: 'Ivan photo 8'
   }
 ];
