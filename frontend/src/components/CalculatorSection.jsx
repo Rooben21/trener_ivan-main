@@ -70,6 +70,29 @@ const CalculatorSection = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  // Age factor for metabolism and results
+  const getAgeFactor = (age) => {
+    if (age <= 25) return { weightLoss: 1.10, muscleGain: 1.20 };
+    if (age <= 35) return { weightLoss: 1.00, muscleGain: 1.00 };
+    if (age <= 45) return { weightLoss: 0.90, muscleGain: 0.85 };
+    if (age <= 55) return { weightLoss: 0.80, muscleGain: 0.75 };
+    return { weightLoss: 0.70, muscleGain: 0.65 };
+  };
+
+  // Activity level rates (kg per week)
+  const getActivityRates = (activity) => {
+    switch (activity) {
+      case 'beginner':
+        return { weightLoss: 0.30, muscleGain: 0.15, newbieBonus: 1.5 };
+      case 'moderate':
+        return { weightLoss: 0.45, muscleGain: 0.22, newbieBonus: 1.2 };
+      case 'advanced':
+        return { weightLoss: 0.55, muscleGain: 0.28, newbieBonus: 1.0 };
+      default:
+        return { weightLoss: 0.45, muscleGain: 0.22, newbieBonus: 1.2 };
+    }
+  };
+
   const calculateResults = () => {
     if (!validateForm()) return;
 
@@ -90,7 +113,7 @@ const CalculatorSection = () => {
         bmr = 10 * weight + 6.25 * height - 5 * age - 161;
       }
 
-      // Activity multipliers
+      // Activity multipliers for TDEE
       const activityMultipliers = {
         beginner: 1.2,
         moderate: 1.375,
@@ -98,60 +121,101 @@ const CalculatorSection = () => {
       };
       const tdee = bmr * activityMultipliers[formData.activity];
 
-      // Estimate current body fat percentage (simplified)
+      // Get age and activity factors
+      const ageFactor = getAgeFactor(age);
+      const activityRates = getActivityRates(formData.activity);
+
+      // BMI for body fat estimation
+      const bmi = weight / (height / 100) ** 2;
+
+      // Estimate current body fat percentage based on age, gender, and BMI
       let currentFatPercent;
+      const ageAdjustment = Math.max(0, (age - 25) * 0.15); // +0.15% per year after 25
       if (isMale) {
-        currentFatPercent = Math.max(8, Math.min(35, 20 + (age - 25) * 0.1 + (weight / (height / 100) ** 2 - 22) * 0.8));
+        // Men: base ~15% at healthy BMI, increases with BMI and age
+        currentFatPercent = Math.max(8, Math.min(40, 10 + (bmi - 22) * 1.2 + ageAdjustment));
       } else {
-        currentFatPercent = Math.max(15, Math.min(42, 28 + (age - 25) * 0.1 + (weight / (height / 100) ** 2 - 22) * 0.8));
+        // Women: base ~23% at healthy BMI, increases with BMI and age
+        currentFatPercent = Math.max(15, Math.min(45, 18 + (bmi - 22) * 1.2 + ageAdjustment));
       }
 
-      // Current muscle mass estimation
+      // Current muscle mass estimation (based on lean mass)
       const fatMass = weight * (currentFatPercent / 100);
       const leanMass = weight - fatMass;
-      const currentMuscleMass = leanMass * 0.45; // ~45% of lean mass is muscle
+      const currentMuscleMass = leanMass * (isMale ? 0.48 : 0.42); // Men have more muscle
 
       let targetWeight, targetFatPercent, targetMuscleMass, summaryText;
 
       if (formData.goal === 'weightLoss') {
-        // Weight loss: 0.5kg per week (realistic)
-        const weightLoss = Math.min(0.5 * weeks, weight * 0.15); // Max 15% of body weight
-        targetWeight = weight - weightLoss;
-        targetFatPercent = currentFatPercent - (weightLoss * 0.8); // Mostly fat loss
-        targetMuscleMass = currentMuscleMass - (weightLoss * 0.1); // Minimal muscle loss with training
+        // Weight loss with age and activity factors
+        const baseWeeklyLoss = activityRates.weightLoss * ageFactor.weightLoss;
+        // Max 1% of body weight per week for safety
+        const maxWeeklyLoss = weight * 0.01;
+        const effectiveWeeklyLoss = Math.min(baseWeeklyLoss, maxWeeklyLoss);
+        const totalWeightLoss = Math.min(effectiveWeeklyLoss * weeks, weight * 0.15);
+        
+        targetWeight = weight - totalWeightLoss;
+        // Fat loss is ~85% of weight loss with proper training
+        const fatLoss = totalWeightLoss * 0.85;
+        targetFatPercent = currentFatPercent - (fatLoss / weight * 100);
+        // Preserve muscle with training (lose only ~5% of weight loss as muscle)
+        targetMuscleMass = currentMuscleMass - (totalWeightLoss * 0.05);
         
         if (language === 'ua') {
-          summaryText = `За ${formData.duration} ${formData.duration === 1 ? 'місяць' : 'місяці(-ів)'} під моїм наставництвом ви можете скинути ~${weightLoss.toFixed(1)} кг жиру та зберегти м'язову масу. Ваше тіло стане витривалішим і підтягнутішим.`;
+          const activityText = formData.activity === 'beginner' ? 'При збільшенні активності результат буде кращим!' : '';
+          summaryText = `За ${formData.duration} ${formData.duration === 1 ? 'місяць' : 'місяці(-ів)'} під моїм наставництвом ви можете скинути ~${totalWeightLoss.toFixed(1)} кг жиру та зберегти м'язову масу. ${activityText}`;
         } else {
-          summaryText = `W ciągu ${formData.duration} ${formData.duration === 1 ? 'miesiąca' : 'miesięcy'} pod moim kierownictwem możesz schudnąć ~${weightLoss.toFixed(1)} kg tłuszczu i zachować masę mięśniową. Twoje ciało stanie się bardziej wytrzymałe i jędrne.`;
+          const activityText = formData.activity === 'beginner' ? 'Przy większej aktywności wynik będzie lepszy!' : '';
+          summaryText = `W ciągu ${formData.duration} ${formData.duration === 1 ? 'miesiąca' : 'miesięcy'} pod moim kierownictwem możesz schudnąć ~${totalWeightLoss.toFixed(1)} kg tłuszczu i zachować masę mięśniową. ${activityText}`;
         }
       } else if (formData.goal === 'muscleGain') {
-        // Muscle gain: 0.25kg per week (realistic for natural)
-        const muscleGain = Math.min(0.25 * weeks, 6); // Max ~6kg muscle gain
-        const weightGain = muscleGain * 1.3; // Some fat gain is inevitable
-        targetWeight = weight + weightGain;
-        targetFatPercent = currentFatPercent - 0.5; // Slight decrease due to more muscle
-        targetMuscleMass = currentMuscleMass + muscleGain;
+        // Muscle gain with age, activity, and newbie bonus factors
+        const baseWeeklyGain = activityRates.muscleGain * ageFactor.muscleGain;
+        // Newbie gains bonus for beginners
+        const effectiveWeeklyGain = baseWeeklyGain * activityRates.newbieBonus;
+        // Max realistic muscle gain: ~0.5 kg/month for experienced, ~1 kg for beginners
+        const maxMonthlyGain = formData.activity === 'beginner' ? 1.0 : 0.5;
+        const totalMuscleGain = Math.min(effectiveWeeklyGain * weeks, maxMonthlyGain * formData.duration);
+        
+        // Some fat gain is inevitable (~20-30% of total weight gain)
+        const fatGain = totalMuscleGain * 0.25;
+        const totalWeightGain = totalMuscleGain + fatGain;
+        
+        targetWeight = weight + totalWeightGain;
+        targetMuscleMass = currentMuscleMass + totalMuscleGain;
+        // Fat percent decreases due to more muscle mass despite some fat gain
+        targetFatPercent = ((fatMass + fatGain) / targetWeight) * 100;
         
         if (language === 'ua') {
-          summaryText = `За ${formData.duration} ${formData.duration === 1 ? 'місяць' : 'місяці(-ів)'} під моїм наставництвом ви можете набрати ~${muscleGain.toFixed(1)} кг м'язової маси. Ваше тіло стане сильнішим та рельєфнішим.`;
+          const ageText = age > 40 ? 'Для вашого віку це відмінний результат!' : '';
+          const beginnerText = formData.activity === 'beginner' ? 'Початківці набирають м\'язи швидше завдяки "newbie gains"!' : '';
+          summaryText = `За ${formData.duration} ${formData.duration === 1 ? 'місяць' : 'місяці(-ів)'} ви можете набрати ~${totalMuscleGain.toFixed(1)} кг м'язової маси. ${beginnerText} ${ageText}`;
         } else {
-          summaryText = `W ciągu ${formData.duration} ${formData.duration === 1 ? 'miesiąca' : 'miesięcy'} pod moim kierownictwem możesz zbudować ~${muscleGain.toFixed(1)} kg masy mięśniowej. Twoje ciało stanie się silniejsze i bardziej wyrzeźbione.`;
+          const ageText = age > 40 ? 'Dla twojego wieku to świetny wynik!' : '';
+          const beginnerText = formData.activity === 'beginner' ? 'Początkujący budują mięśnie szybciej dzięki "newbie gains"!' : '';
+          summaryText = `W ciągu ${formData.duration} ${formData.duration === 1 ? 'miesiąca' : 'miesięcy'} możesz zbudować ~${totalMuscleGain.toFixed(1)} kg masy mięśniowej. ${beginnerText} ${ageText}`;
         }
       } else {
-        // Complex: 70% weight loss focus + 30% muscle gain
-        const weightLoss = Math.min(0.35 * weeks, weight * 0.1);
-        const muscleGain = Math.min(0.1 * weeks, 2);
-        targetWeight = weight - weightLoss + (muscleGain * 0.5);
-        targetFatPercent = currentFatPercent - (weightLoss * 0.7);
-        targetMuscleMass = currentMuscleMass + muscleGain;
+        // Complex: body recomposition (lose fat + gain muscle)
+        const weightLossRate = activityRates.weightLoss * ageFactor.weightLoss * 0.6;
+        const muscleGainRate = activityRates.muscleGain * ageFactor.muscleGain * 0.5 * activityRates.newbieBonus;
+        
+        const totalFatLoss = Math.min(weightLossRate * weeks, weight * 0.08);
+        const totalMuscleGain = Math.min(muscleGainRate * weeks, 0.4 * formData.duration);
+        
+        targetWeight = weight - totalFatLoss + totalMuscleGain;
+        targetMuscleMass = currentMuscleMass + totalMuscleGain;
+        targetFatPercent = ((fatMass - totalFatLoss) / targetWeight) * 100;
         
         if (language === 'ua') {
-          summaryText = `За ${formData.duration} ${formData.duration === 1 ? 'місяць' : 'місяці(-ів)'} під моїм наставництвом ви можете скинути ~${weightLoss.toFixed(1)} кг жиру та набрати ~${muscleGain.toFixed(1)} кг м'язової маси. Ідеальна рекомпозиція тіла!`;
+          summaryText = `За ${formData.duration} ${formData.duration === 1 ? 'місяць' : 'місяці(-ів)'} ви можете скинути ~${totalFatLoss.toFixed(1)} кг жиру та набрати ~${totalMuscleGain.toFixed(1)} кг м'язової маси. Ідеальна рекомпозиція тіла!`;
         } else {
-          summaryText = `W ciągu ${formData.duration} ${formData.duration === 1 ? 'miesiąca' : 'miesięcy'} pod moim kierownictwem możesz schudnąć ~${weightLoss.toFixed(1)} kg tłuszczu i zbudować ~${muscleGain.toFixed(1)} kg masy mięśniowej. Idealna rekompozycja ciała!`;
+          summaryText = `W ciągu ${formData.duration} ${formData.duration === 1 ? 'miesiąca' : 'miesięcy'} możesz schudnąć ~${totalFatLoss.toFixed(1)} kg tłuszczu i zbudować ~${totalMuscleGain.toFixed(1)} kg masy mięśniowej. Idealna rekompozycja ciała!`;
         }
       }
+
+      // Ensure realistic minimums for fat percentage
+      const minFatPercent = isMale ? 6 : 14;
 
       setResults({
         current: {
@@ -161,8 +225,8 @@ const CalculatorSection = () => {
         },
         forecast: {
           weight: Math.round(targetWeight * 10) / 10,
-          fatPercent: Math.round(Math.max(isMale ? 6 : 14, targetFatPercent) * 10) / 10,
-          muscleMass: Math.round(targetMuscleMass * 10) / 10
+          fatPercent: Math.round(Math.max(minFatPercent, targetFatPercent) * 10) / 10,
+          muscleMass: Math.round(Math.max(currentMuscleMass * 0.9, targetMuscleMass) * 10) / 10
         },
         summaryText,
         tdee: Math.round(tdee)
