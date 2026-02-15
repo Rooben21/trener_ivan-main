@@ -5,35 +5,35 @@ import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 const transformations = [
   {
     id: 1,
-    image: 'https://customer-assets.emergentagent.com/job_lodz-personal-coach/artifacts/2iphab68_%2B11%20%D0%BA%D0%B3%206%20%D0%BC%D1%96%D1%81%D1%8F%D1%86%D1%96%D0%B2.jpg',
+    image: '/images/transformations/transform1.jpg',
     result: '+11 kg',
     duration: { ua: '6 місяців', pl: '6 miesięcy' },
     type: 'gain'
   },
   {
     id: 2,
-    image: 'https://customer-assets.emergentagent.com/job_lodz-personal-coach/artifacts/q8ojqind_-7%D0%BA%D0%B3%202%20%D0%BC%D1%96%D1%81%D1%8F%D1%86%D1%96.jpg',
+    image: '/images/transformations/transform2.jpg',
     result: '-7 kg',
     duration: { ua: '2 місяці', pl: '2 miesiące' },
     type: 'loss'
   },
   {
     id: 3,
-    image: 'https://customer-assets.emergentagent.com/job_lodz-personal-coach/artifacts/z0j404x8_-6%20%D0%BA%D0%B3%202%20%D0%BC%D1%96%D1%81%D1%8F%D1%86%D1%96.jpg',
+    image: '/images/transformations/transform3.jpg',
     result: '-6 kg',
     duration: { ua: '2 місяці', pl: '2 miesiące' },
     type: 'loss'
   },
   {
     id: 4,
-    image: 'https://customer-assets.emergentagent.com/job_lodz-personal-coach/artifacts/9rfgx0d0_%2B13%20%D0%BA%D0%B3%201%20%D1%80%D1%96%D0%BA%20.jpg',
+    image: '/images/transformations/transform4.jpg',
     result: '+13 kg',
     duration: { ua: '1 рік', pl: '1 rok' },
     type: 'gain'
   },
   {
     id: 5,
-    image: 'https://customer-assets.emergentagent.com/job_lodz-personal-coach/artifacts/q58ukzsh_%2B6%D0%BA%D0%B3%202%20%D0%BC%D1%96%D1%81%D1%8F%D1%86%D1%96.jpg',
+    image: '/images/transformations/transform5.jpg',
     result: '+6 kg',
     duration: { ua: '2 місяці', pl: '2 miesiące' },
     type: 'gain'
