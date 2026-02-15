@@ -261,27 +261,27 @@ export const trainerData = {
 export const galleryImages = [
   {
     id: 1,
-    src: 'https://customer-assets.emergentagent.com/job_deffa043-7968-44ad-a49f-fd5e69106817/artifacts/fkbf59kv_IMG_20260121_171509_666.jpg',
-    alt: 'Vanya in gym'
+    src: '/images/gallery/photo1.jpg',
+    alt: 'Ivan in gym'
   },
   {
     id: 2,
-    src: 'https://customer-assets.emergentagent.com/job_deffa043-7968-44ad-a49f-fd5e69106817/artifacts/pb05q9ug_IMG_20260121_171512_544.jpg',
-    alt: 'Vanya mirror selfie'
+    src: '/images/gallery/photo2.jpg',
+    alt: 'Ivan mirror selfie'
   },
   {
     id: 3,
-    src: 'https://customer-assets.emergentagent.com/job_deffa043-7968-44ad-a49f-fd5e69106817/artifacts/s0c3x4mb_IMG_20260121_171517_104.jpg',
-    alt: 'Vanya training'
+    src: '/images/gallery/photo3.jpg',
+    alt: 'Ivan training'
   },
   {
     id: 4,
-    src: 'https://customer-assets.emergentagent.com/job_deffa043-7968-44ad-a49f-fd5e69106817/artifacts/cpldyssa_IMG_20260121_171519_072.jpg',
-    alt: 'Vanya with client'
+    src: '/images/gallery/photo4.jpg',
+    alt: 'Ivan with client'
   },
   {
     id: 5,
-    src: 'https://customer-assets.emergentagent.com/job_deffa043-7968-44ad-a49f-fd5e69106817/artifacts/nm0x1j3v_IMG_20260121_171520_967.jpg',
-    alt: 'Vanya competition'
+    src: '/images/gallery/photo5.jpg',
+    alt: 'Ivan competition'
   }
 ];
