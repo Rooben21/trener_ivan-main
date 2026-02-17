@@ -34,6 +34,15 @@ const ContactSection = () => {
       setIsSuccess(true);
       setFormData({ name: '', phone: '', message: '' });
       
+      // Track Google Ads conversion
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'conversion', {
+          'send_to': 'AW-17957308226/contact_form_submit',
+          'event_category': 'form',
+          'event_label': 'contact_form'
+        });
+      }
+      
       // Reset success message after 5 seconds
       setTimeout(() => setIsSuccess(false), 5000);
     } catch (error) {
