@@ -245,15 +245,6 @@ const CalculatorSection = () => {
     }, 800);
   };
 
-  // Contact form state for calculator CTA
-  const [showContactModal, setShowContactModal] = useState(false);
-  const [contactFormData, setContactFormData] = useState({
-    name: '',
-    phone: '',
-    email: ''
-  });
-  const [contactErrors, setContactErrors] = useState({});
-
   // Validate phone - only digits, spaces, +, -, ()
   const validatePhone = (phone) => {
     const digitsOnly = phone.replace(/[\s\-\+\(\)]/g, '');
