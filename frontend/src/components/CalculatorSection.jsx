@@ -665,6 +665,120 @@ const CalculatorSection = () => {
           )}
         </div>
       </div>
+
+      {/* Contact Modal */}
+      {showContactModal && (
+        <div 
+          className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+          onClick={() => setShowContactModal(false)}
+        >
+          <div 
+            className="bg-white rounded-[32px] p-6 md:p-8 max-w-md w-full shadow-2xl relative"
+            onClick={(e) => e.stopPropagation()}
+            style={{ animation: 'fadeInUp 0.3s ease-out' }}
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setShowContactModal(false)}
+              className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <X size={24} className="text-[#807979]" />
+            </button>
+
+            <h3 className="text-2xl font-bold text-[#004534] mb-2">
+              {language === 'ua' ? 'Залиште свої дані' : 'Zostaw swoje dane'}
+            </h3>
+            <p className="text-[#0C6951] mb-6">
+              {language === 'ua' 
+                ? "Я зв'яжусь з вами для безкоштовної консультації" 
+                : 'Skontaktuję się z tobą w celu bezpłatnej konsultacji'}
+            </p>
+
+            <form onSubmit={handleContactSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-[#004534] mb-2">
+                  {language === 'ua' ? "Ім'я" : 'Imię'} *
+                </label>
+                <div className="relative">
+                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#807979]" />
+                  <input
+                    type="text"
+                    name="name"
+                    value={contactFormData.name}
+                    onChange={handleContactFormChange}
+                    required
+                    placeholder={language === 'ua' ? "Ваше ім'я" : 'Twoje imię'}
+                    className={`w-full pl-12 pr-4 py-3 rounded-[15px] border-2 bg-white text-[#004534]
+                              placeholder-[#807979] focus:outline-none transition-colors
+                              ${contactErrors.name ? 'border-red-400' : 'border-[#DDDDDD] focus:border-[#0C6951]'}`}
+                  />
+                </div>
+                {contactErrors.name && <p className="text-red-500 text-sm mt-1">{contactErrors.name}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-[#004534] mb-2">
+                  {language === 'ua' ? 'Телефон' : 'Telefon'} *
+                </label>
+                <div className="relative">
+                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#807979]" />
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={contactFormData.phone}
+                    onChange={handleContactFormChange}
+                    required
+                    placeholder="+48 XXX XXX XXX"
+                    className={`w-full pl-12 pr-4 py-3 rounded-[15px] border-2 bg-white text-[#004534]
+                              placeholder-[#807979] focus:outline-none transition-colors
+                              ${contactErrors.phone ? 'border-red-400' : 'border-[#DDDDDD] focus:border-[#0C6951]'}`}
+                  />
+                </div>
+                {contactErrors.phone && <p className="text-red-500 text-sm mt-1">{contactErrors.phone}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-[#004534] mb-2">
+                  Email *
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#807979]" />
+                  <input
+                    type="email"
+                    name="email"
+                    value={contactFormData.email}
+                    onChange={handleContactFormChange}
+                    required
+                    placeholder="example@email.com"
+                    className={`w-full pl-12 pr-4 py-3 rounded-[15px] border-2 bg-white text-[#004534]
+                              placeholder-[#807979] focus:outline-none transition-colors
+                              ${contactErrors.email ? 'border-red-400' : 'border-[#DDDDDD] focus:border-[#0C6951]'}`}
+                  />
+                </div>
+                {contactErrors.email && <p className="text-red-500 text-sm mt-1">{contactErrors.email}</p>}
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full py-4 px-6 rounded-[25px] bg-[#D3FF62] text-[#004534] font-bold text-lg
+                          hover:bg-[#c4f050] transform hover:-translate-y-1 transition-all duration-200
+                          shadow-md hover:shadow-lg disabled:opacity-70 disabled:transform-none
+                          flex items-center justify-center gap-2 mt-6"
+              >
+                {isSubmitting ? (
+                  <div className="w-6 h-6 border-2 border-[#004534] border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <Sparkles size={20} />
+                    {language === 'ua' ? 'Надіслати заявку' : 'Wyślij zgłoszenie'}
+                  </>
+                )}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
