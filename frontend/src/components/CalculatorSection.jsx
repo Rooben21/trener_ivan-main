@@ -236,7 +236,58 @@ const CalculatorSection = () => {
     }, 800);
   };
 
-  const handleCtaClick = async () => {
+  // Contact form state for calculator CTA
+  const [showContactModal, setShowContactModal] = useState(false);
+  const [contactFormData, setContactFormData] = useState({
+    name: '',
+    phone: '',
+    email: ''
+  });
+  const [contactErrors, setContactErrors] = useState({});
+
+  // Validate phone - only digits, spaces, +, -, ()
+  const validatePhone = (phone) => {
+    const digitsOnly = phone.replace(/[\s\-\+\(\)]/g, '');
+    return /^\d{9,15}$/.test(digitsOnly);
+  };
+
+  // Validate email
+  const validateEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const handleContactFormChange = (e) => {
+    const { name, value } = e.target;
+    setContactFormData(prev => ({ ...prev, [name]: value }));
+    if (contactErrors[name]) {
+      setContactErrors(prev => ({ ...prev, [name]: null }));
+    }
+  };
+
+  const handleCtaClick = () => {
+    setShowContactModal(true);
+  };
+
+  const handleContactSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Validate fields
+    const newErrors = {};
+    if (!contactFormData.name.trim()) {
+      newErrors.name = language === 'ua' ? "Введіть ім'я" : 'Wprowadź imię';
+    }
+    if (!validatePhone(contactFormData.phone)) {
+      newErrors.phone = language === 'ua' ? 'Введіть коректний номер телефону' : 'Wprowadź poprawny numer telefonu';
+    }
+    if (!validateEmail(contactFormData.email)) {
+      newErrors.email = language === 'ua' ? 'Введіть коректний email' : 'Wprowadź poprawny email';
+    }
+    
+    if (Object.keys(newErrors).length > 0) {
+      setContactErrors(newErrors);
+      return;
+    }
+    
     setIsSubmitting(true);
     
     const goalLabels = {
@@ -246,16 +297,18 @@ const CalculatorSection = () => {
     };
 
     const message = language === 'ua' 
-      ? `🎯 Ціль: ${goalLabels[formData.goal]}\n📊 Поточна вага: ${formData.weight} кг\n🎯 Цільова вага: ${results.forecast.weight} кг\n⏱ Термін: ${formData.duration} міс.\n\n${results.summaryText}`
-      : `🎯 Cel: ${goalLabels[formData.goal]}\n📊 Aktualna waga: ${formData.weight} kg\n🎯 Docelowa waga: ${results.forecast.weight} kg\n⏱ Okres: ${formData.duration} mies.\n\n${results.summaryText}`;
+      ? `📧 Email: ${contactFormData.email}\n🎯 Ціль: ${goalLabels[formData.goal]}\n📊 Поточна вага: ${formData.weight} кг\n🎯 Цільова вага: ${results.forecast.weight} кг\n⏱ Термін: ${formData.duration} міс.\n\n${results.summaryText}`
+      : `📧 Email: ${contactFormData.email}\n🎯 Cel: ${goalLabels[formData.goal]}\n📊 Aktualna waga: ${formData.weight} kg\n🎯 Docelowa waga: ${results.forecast.weight} kg\n⏱ Okres: ${formData.duration} mies.\n\n${results.summaryText}`;
 
     try {
       await axios.post(`${BACKEND_URL}/api/contact`, {
-        name: language === 'ua' ? 'Заявка з калькулятора' : 'Zgłoszenie z kalkulatora',
-        phone: '-',
+        name: contactFormData.name,
+        phone: contactFormData.phone,
         message: message
       });
       setSubmitSuccess(true);
+      setShowContactModal(false);
+      setContactFormData({ name: '', phone: '', email: '' });
       
       // Track Google Ads conversion
       if (typeof window.gtag === 'function') {
@@ -266,12 +319,6 @@ const CalculatorSection = () => {
         });
       }
       
-      setTimeout(() => {
-        const contactSection = document.getElementById('contact');
-        if (contactSection) {
-          contactSection.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 1500);
     } catch (error) {
       console.error('Error:', error);
     } finally {
