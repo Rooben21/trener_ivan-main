@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { TrendingDown, TrendingUp, RefreshCw, User, Calculator, Calendar, ArrowRight, Sparkles } from 'lucide-react';
+import { TrendingDown, TrendingUp, RefreshCw, User, Calculator, Calendar, ArrowRight, Sparkles, X, Mail, Phone } from 'lucide-react';
 import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
