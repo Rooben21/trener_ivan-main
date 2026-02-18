@@ -36,6 +36,15 @@ const CalculatorSection = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
+  // Contact form state for calculator CTA
+  const [showContactModal, setShowContactModal] = useState(false);
+  const [contactFormData, setContactFormData] = useState({
+    name: '',
+    phone: '',
+    email: ''
+  });
+  const [contactErrors, setContactErrors] = useState({});
+
   if (!language) return null;
 
   const goals = [
