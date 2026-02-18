@@ -222,11 +222,14 @@ export const translations = {
       form: {
         name: 'Imię',
         phone: 'Telefon',
+        email: 'Email',
         message: 'Wiadomość',
         messagePlaceholder: 'Opowiedz o swoich celach...',
         submit: 'Wyślij zgłoszenie',
         success: 'Dziękuję! Skontaktuję się z tobą wkrótce.',
-        error: 'Coś poszło nie tak. Spróbuj ponownie.'
+        error: 'Coś poszło nie tak. Spróbuj ponownie.',
+        phoneError: 'Wprowadź poprawny numer telefonu (tylko cyfry)',
+        emailError: 'Wprowadź poprawny adres email'
       }
     },
     footer: {
