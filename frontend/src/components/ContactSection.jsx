@@ -11,28 +11,64 @@ const ContactSection = () => {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
+    email: '',
     message: ''
   });
+  const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
 
   if (!language) return null;
 
+  // Validate phone - only digits, spaces, +, -, ()
+  const validatePhone = (phone) => {
+    const digitsOnly = phone.replace(/[\s\-\+\(\)]/g, '');
+    return /^\d{9,15}$/.test(digitsOnly);
+  };
+
+  // Validate email
+  const validateEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: null }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate fields
+    const newErrors = {};
+    if (!validatePhone(formData.phone)) {
+      newErrors.phone = t.contact.form.phoneError;
+    }
+    if (!validateEmail(formData.email)) {
+      newErrors.email = t.contact.form.emailError;
+    }
+    
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+    
     setIsSubmitting(true);
     setIsError(false);
     
     try {
-      await axios.post(`${BACKEND_URL}/api/contact`, formData);
+      await axios.post(`${BACKEND_URL}/api/contact`, {
+        name: formData.name,
+        phone: formData.phone,
+        message: `Email: ${formData.email}\n\n${formData.message}`
+      });
       setIsSuccess(true);
-      setFormData({ name: '', phone: '', message: '' });
+      setFormData({ name: '', phone: '', email: '', message: '' });
       
       // Track Google Ads conversion
       if (typeof window.gtag === 'function') {
@@ -136,7 +172,7 @@ const ContactSection = () => {
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-[#004534] mb-2">
-                    {t.contact.form.name}
+                    {t.contact.form.name} *
                   </label>
                   <input
                     type="text"
@@ -153,7 +189,7 @@ const ContactSection = () => {
 
                 <div>
                   <label htmlFor="phone" className="block text-sm font-medium text-[#004534] mb-2">
-                    {t.contact.form.phone}
+                    {t.contact.form.phone} *
                   </label>
                   <input
                     type="tel"
@@ -162,10 +198,33 @@ const ContactSection = () => {
                     value={formData.phone}
                     onChange={handleChange}
                     required
-                    className="w-full px-5 py-4 rounded-[20px] border-2 border-[#DDDDDD] bg-white
+                    placeholder="+48 XXX XXX XXX"
+                    className={`w-full px-5 py-4 rounded-[20px] border-2 bg-white
                               text-[#004534] placeholder-[#807979]
-                              focus:border-[#0C6951] focus:outline-none transition-colors"
+                              focus:outline-none transition-colors
+                              ${errors.phone ? 'border-red-400' : 'border-[#DDDDDD] focus:border-[#0C6951]'}`}
                   />
+                  {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
+                </div>
+
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-[#004534] mb-2">
+                    {t.contact.form.email} *
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    placeholder="example@email.com"
+                    className={`w-full px-5 py-4 rounded-[20px] border-2 bg-white
+                              text-[#004534] placeholder-[#807979]
+                              focus:outline-none transition-colors
+                              ${errors.email ? 'border-red-400' : 'border-[#DDDDDD] focus:border-[#0C6951]'}`}
+                  />
+                  {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
                 </div>
 
                 <div>
