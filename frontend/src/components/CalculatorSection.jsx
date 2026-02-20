@@ -88,17 +88,17 @@ const CalculatorSection = () => {
     return { weightLoss: 0.70, muscleGain: 0.65 };
   };
 
-  // Activity level rates (kg per week)
-  const getActivityRates = (activity) => {
-    switch (activity) {
-      case 'beginner':
-        return { weightLoss: 0.30, muscleGain: 0.15, newbieBonus: 1.5 };
-      case 'moderate':
-        return { weightLoss: 0.45, muscleGain: 0.22, newbieBonus: 1.2 };
-      case 'advanced':
-        return { weightLoss: 0.55, muscleGain: 0.28, newbieBonus: 1.0 };
+  // Training frequency rates (kg per week based on planned training frequency)
+  const getTrainingRates = (frequency) => {
+    switch (frequency) {
+      case 'beginner': // 1-2 times per week
+        return { weightLoss: 0.35, muscleGain: 0.12, multiplier: 1.3 };
+      case 'moderate': // 3-4 times per week
+        return { weightLoss: 0.50, muscleGain: 0.20, multiplier: 1.45 };
+      case 'advanced': // 5-6 times per week
+        return { weightLoss: 0.60, muscleGain: 0.25, multiplier: 1.6 };
       default:
-        return { weightLoss: 0.45, muscleGain: 0.22, newbieBonus: 1.2 };
+        return { weightLoss: 0.50, muscleGain: 0.20, multiplier: 1.45 };
     }
   };
 
