@@ -185,10 +185,10 @@ export const translations = {
       height: 'Wzrost (cm)',
       weight: 'Aktualna waga (kg)',
       activity: {
-        label: 'Poziom aktywności',
-        beginner: 'Początkujący (mało się ruszam)',
-        moderate: 'Średni (1-2 razy w tygodniu)',
-        advanced: 'Zaawansowany (regularne treningi)'
+        label: 'Jak często planujesz trenować',
+        beginner: '1-2 razy w tygodniu',
+        moderate: '3-4 razy w tygodniu',
+        advanced: '5-6 razy w tygodniu'
       },
       duration: {
         month1: '1 miesiąc',
