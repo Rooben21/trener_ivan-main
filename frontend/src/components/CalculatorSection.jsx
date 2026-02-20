@@ -156,8 +156,8 @@ const CalculatorSection = () => {
       let targetWeight, targetFatPercent, targetMuscleMass, summaryText;
 
       if (formData.goal === 'weightLoss') {
-        // Weight loss with age and activity factors
-        const baseWeeklyLoss = activityRates.weightLoss * ageFactor.weightLoss;
+        // Weight loss with age and training frequency factors
+        const baseWeeklyLoss = trainingRates.weightLoss * ageFactor.weightLoss;
         // Max 1% of body weight per week for safety
         const maxWeeklyLoss = weight * 0.01;
         const effectiveWeeklyLoss = Math.min(baseWeeklyLoss, maxWeeklyLoss);
@@ -171,11 +171,11 @@ const CalculatorSection = () => {
         targetMuscleMass = currentMuscleMass - (totalWeightLoss * 0.05);
         
         if (language === 'ua') {
-          const activityText = formData.activity === 'beginner' ? 'При збільшенні активності результат буде кращим!' : '';
-          summaryText = `За ${formData.duration} ${formData.duration === 1 ? 'місяць' : 'місяці(-ів)'} під моїм наставництвом ви можете скинути ~${totalWeightLoss.toFixed(1)} кг жиру та зберегти м'язову масу. ${activityText}`;
+          const freqText = formData.activity === 'advanced' ? 'Інтенсивні тренування дадуть максимальний результат!' : '';
+          summaryText = `За ${formData.duration} ${formData.duration === 1 ? 'місяць' : 'місяці(-ів)'} при тренуваннях ${t.calculator.activity[formData.activity].toLowerCase()} ви можете скинути ~${totalWeightLoss.toFixed(1)} кг жиру та зберегти м'язову масу. ${freqText}`;
         } else {
-          const activityText = formData.activity === 'beginner' ? 'Przy większej aktywności wynik będzie lepszy!' : '';
-          summaryText = `W ciągu ${formData.duration} ${formData.duration === 1 ? 'miesiąca' : 'miesięcy'} pod moim kierownictwem możesz schudnąć ~${totalWeightLoss.toFixed(1)} kg tłuszczu i zachować masę mięśniową. ${activityText}`;
+          const freqText = formData.activity === 'advanced' ? 'Intensywne treningi dadzą maksymalny wynik!' : '';
+          summaryText = `W ciągu ${formData.duration} ${formData.duration === 1 ? 'miesiąca' : 'miesięcy'} trenując ${t.calculator.activity[formData.activity].toLowerCase()} możesz schudnąć ~${totalWeightLoss.toFixed(1)} kg tłuszczu i zachować masę mięśniową. ${freqText}`;
         }
       } else if (formData.goal === 'muscleGain') {
         // Muscle gain with age, activity, and newbie bonus factors
