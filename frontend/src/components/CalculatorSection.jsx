@@ -122,17 +122,17 @@ const CalculatorSection = () => {
         bmr = 10 * weight + 6.25 * height - 5 * age - 161;
       }
 
-      // Activity multipliers for TDEE
-      const activityMultipliers = {
-        beginner: 1.2,
-        moderate: 1.375,
-        advanced: 1.55
+      // Activity multipliers for TDEE based on planned training
+      const trainingMultipliers = {
+        beginner: 1.3,   // 1-2 times/week
+        moderate: 1.45,  // 3-4 times/week
+        advanced: 1.6    // 5-6 times/week
       };
-      const tdee = bmr * activityMultipliers[formData.activity];
+      const tdee = bmr * trainingMultipliers[formData.activity];
 
-      // Get age and activity factors
+      // Get age and training factors
       const ageFactor = getAgeFactor(age);
-      const activityRates = getActivityRates(formData.activity);
+      const trainingRates = getTrainingRates(formData.activity);
 
       // BMI for body fat estimation
       const bmi = weight / (height / 100) ** 2;
