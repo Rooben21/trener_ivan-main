@@ -73,9 +73,7 @@ const ContactSection = () => {
       // Track Google Ads conversion
       if (typeof window.gtag === 'function') {
         window.gtag('event', 'conversion', {
-          'send_to': 'AW-17957308226/contact_form_submit',
-          'event_category': 'form',
-          'event_label': 'contact_form'
+          'send_to': 'AW-17957308226/A7sYCLju7_sbEMKO2_JC'
         });
       }
       
