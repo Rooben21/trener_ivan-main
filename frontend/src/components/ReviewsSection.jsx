@@ -5,13 +5,14 @@ const ReviewsSection = () => {
   const { t, language } = useLanguage();
 
   useEffect(() => {
-    // Load Elfsight script
-    const existingScript = document.querySelector('script[src="https://elfsightcdn.com/platform.js"]');
-    
+    // Load Featurable widget script
+    const src = 'https://featurable.com/assets/bundle.js';
+    const existingScript = document.querySelector(`script[src="${src}"]`);
     if (!existingScript) {
       const script = document.createElement('script');
-      script.src = 'https://elfsightcdn.com/platform.js';
-      script.async = true;
+      script.src = src;
+      script.defer = true;
+      script.charset = 'UTF-8';
       document.body.appendChild(script);
     }
   }, []);
@@ -25,12 +26,9 @@ const ReviewsSection = () => {
           {t.reviews.title}
         </h2>
 
-        {/* Elfsight Google Reviews Widget */}
+        {/* Featurable reviews widget */}
         <div className="max-w-4xl mx-auto">
-          <div 
-            className="elfsight-app-11c4a71a-1dcb-40e9-b28b-65b782332ad9" 
-            data-elfsight-app-lazy
-          />
+          <div id="featurable-8d4d957b-7630-4a66-89a1-2bfe339e4502" data-featurable-async />
         </div>
       </div>
     </section>

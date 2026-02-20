@@ -81,25 +81,25 @@ const CalculatorSection = () => {
 
   // Age factor for metabolism and results
   const getAgeFactor = (age) => {
-    if (age <= 25) return { weightLoss: 1.10, muscleGain: 1.20 };
-    if (age <= 35) return { weightLoss: 1.00, muscleGain: 1.00 };
-    if (age <= 45) return { weightLoss: 0.90, muscleGain: 0.85 };
+    if (age <= 25) return { weightLoss: 1.10, muscleGain: 1.30 };
+    if (age <= 35) return { weightLoss: 1.00, muscleGain: 1.10 };
+    if (age <= 45) return { weightLoss: 0.90, muscleGain: 0.95 };
     if (age <= 55) return { weightLoss: 0.80, muscleGain: 0.75 };
     return { weightLoss: 0.70, muscleGain: 0.65 };
   };
 
   // Activity level rates (kg per week)
   const getActivityRates = (activity, isMale = true) => {
-    const femaleModifier = isMale ? 1.0 : 0.7; // Women gain muscle 30% slower
+    const femaleModifier = isMale ? 1.0 : 0.75; // Women gain muscle 25% slower
     switch (activity) {
       case 'beginner':
-        return { weightLoss: 0.55, muscleGain: 0.25 * femaleModifier, newbieBonus: 1.8 };
+        return { weightLoss: 0.65, muscleGain: 0.3 * femaleModifier, newbieBonus: 2.0 };
       case 'moderate':
-        return { weightLoss: 0.7, muscleGain: 0.35 * femaleModifier, newbieBonus: 1.5 };
+        return { weightLoss: 0.85, muscleGain: 0.42 * femaleModifier, newbieBonus: 1.6 };
       case 'advanced':
-        return { weightLoss: 0.9, muscleGain: 0.42 * femaleModifier, newbieBonus: 1.1 };
+        return { weightLoss: 1.1, muscleGain: 0.5 * femaleModifier, newbieBonus: 1.15 };
       default:
-        return { weightLoss: 0.6, muscleGain: 0.4 * femaleModifier, newbieBonus: 1.5 };
+        return { weightLoss: 0.75, muscleGain: 0.48 * femaleModifier, newbieBonus: 1.6 };
     }
   };
 
@@ -159,10 +159,10 @@ const CalculatorSection = () => {
       if (formData.goal === 'weightLoss') {
         // Weight loss with age and activity factors
         const baseWeeklyLoss = activityRates.weightLoss * ageFactor.weightLoss;
-        // Max 1.5% of body weight per week for motivated individuals
-        const maxWeeklyLoss = weight * 0.015;
+        // Max 2% of body weight per week for highly motivated with proper training
+        const maxWeeklyLoss = weight * 0.02;
         const effectiveWeeklyLoss = Math.min(baseWeeklyLoss, maxWeeklyLoss);
-        const totalWeightLoss = Math.min(effectiveWeeklyLoss * weeks, weight * 0.22);
+        const totalWeightLoss = Math.min(effectiveWeeklyLoss * weeks, weight * 0.25);
         
         targetWeight = weight - totalWeightLoss;
         // Fat loss is ~85% of weight loss with proper training
@@ -183,12 +183,12 @@ const CalculatorSection = () => {
         const baseWeeklyGain = activityRates.muscleGain * ageFactor.muscleGain;
         // Newbie gains bonus for beginners
         const effectiveWeeklyGain = baseWeeklyGain * activityRates.newbieBonus;
-        // Max realistic muscle gain: ~0.8 kg/month for experienced, ~1.5 kg for beginners
-        const maxMonthlyGain = formData.activity === 'beginner' ? 1.5 : 0.8;
+        // Max realistic muscle gain: ~1.0 kg/month for experienced, ~2.0 kg for beginners
+        const maxMonthlyGain = formData.activity === 'beginner' ? 2.0 : 1.0;
         const totalMuscleGain = Math.min(effectiveWeeklyGain * weeks, maxMonthlyGain * formData.duration);
         
-        // Some fat gain is inevitable (~15-20% of total weight gain)
-        const fatGain = totalMuscleGain * 0.18;
+        // Some fat gain is inevitable (~12-15% of total weight gain with perfect nutrition)
+        const fatGain = totalMuscleGain * 0.14;
         const totalWeightGain = totalMuscleGain + fatGain;
         
         targetWeight = weight + totalWeightGain;
@@ -207,11 +207,11 @@ const CalculatorSection = () => {
         }
       } else {
         // Complex: body recomposition (lose fat + gain muscle)
-        const weightLossRate = activityRates.weightLoss * ageFactor.weightLoss * 0.8;
-        const muscleGainRate = activityRates.muscleGain * ageFactor.muscleGain * 0.7 * activityRates.newbieBonus;
+        const weightLossRate = activityRates.weightLoss * ageFactor.weightLoss * 0.9;
+        const muscleGainRate = activityRates.muscleGain * ageFactor.muscleGain * 0.8 * activityRates.newbieBonus;
         
-        const totalFatLoss = Math.min(weightLossRate * weeks, weight * 0.12);
-        const totalMuscleGain = Math.min(muscleGainRate * weeks, 0.6 * formData.duration);
+        const totalFatLoss = Math.min(weightLossRate * weeks, weight * 0.14);
+        const totalMuscleGain = Math.min(muscleGainRate * weeks, 0.75 * formData.duration);
         
         targetWeight = weight - totalFatLoss + totalMuscleGain;
         targetMuscleMass = currentMuscleMass + totalMuscleGain;
